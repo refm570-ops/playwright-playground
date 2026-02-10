@@ -9,7 +9,7 @@ npm install
 
 2. Create `.env` file:
 ```env
-API_URL=<your-api-url>
+BASE_URL=<your-api-url>
 TEST_PHONE=<your-phone-number>
 ```
 

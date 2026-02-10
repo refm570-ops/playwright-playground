@@ -53,6 +53,5 @@ export function getCoinAmount(rewards: any[]): number {
       }
     }
   }
-
   return totalCoins;
 }

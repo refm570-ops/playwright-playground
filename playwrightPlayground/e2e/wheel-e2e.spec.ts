@@ -9,7 +9,7 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Wheel of Fortune E2E Scenarios', () => {
   let loginApi: LoginApi;
   let wheelApi: WheelApi;
-  const phone = process.env.TEST_PHONE!;
+  const phone = process.env.TEST_PHONE || 'candidate';
 
   test.beforeEach(async ({ request }) => {
     loginApi = new LoginApi(request);

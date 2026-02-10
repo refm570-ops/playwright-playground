@@ -1,4 +1,4 @@
-# Wheel of Fortune E2E Tests
+# Fish of Fortune E2E Tests
 
 ## How to Run
 

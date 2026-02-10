@@ -33,7 +33,7 @@ jobs:
 
       - name: Run E2E tests
         env:
-          API_URL: ${{ secrets.BASE_URL }}
+          BASE_URL: ${{ secrets.BASE_URL }}
           TEST_PHONE: ${{ secrets.TEST_PHONE }}
         run: npx playwright test
 

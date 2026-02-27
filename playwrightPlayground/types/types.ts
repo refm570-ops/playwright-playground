@@ -1,12 +1,7 @@
-export interface UserBalance {
+export interface Balance {
   coins: number;
-  gems: number;
   energy: number;
-  energyExpirationTS: number;
-  energyExpirationSeconds: number;
-  lastUpdateTS: number;
-  shieldsAmount: number;
-  maxEnergyCapacity: number;
+  gems: number;
 }
 
 export interface Reward {
@@ -15,22 +10,27 @@ export interface Reward {
   rewardResourceType: number;
   amount: number;
   multiplier: number;
-}
-
-export interface SpinResult {
-  selectedIndex: number;
-  rewards: Reward[];
-  userBalance: UserBalance;
+  feedResponse?: {
+    rewards: Record<string, Reward[]>;
+  };
 }
 
 export interface LoginResult {
   accessToken: string;
-  balance: UserBalance;
+  balance: Balance;
   accountCreated: boolean;
 }
 
-export interface SpinOutcome {
+export interface SpinReward {
+  status: 0;
   rewards: Reward[];
-  balance: UserBalance;
+  balance: Balance;
   selectedIndex: number;
 }
+
+export interface SpinExhausted {
+  status: -3;
+  response: string;
+}
+
+export type SpinResponse = SpinReward | SpinExhausted;

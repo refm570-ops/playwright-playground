@@ -1,39 +1,38 @@
-import { LoginApi } from '../modals/LoginApi';
 import { WheelApi } from '../modals/WheelApi';
+import { Balance, Reward } from '../types/types';
 
-export async function spinUntilEmpty(
-  uuid: string,
-  phone: string,
-  loginApi: LoginApi,
+export const INITIAL_ENERGY = 10;
+export const BONUS_SPINS = 10;
+export const TOTAL_SCRIPTED_SPINS = INITIAL_ENERGY + BONUS_SPINS;
+
+export async function spinScriptedStart(
+  accessToken: string,
+  initialBalance: Balance,
   wheelApi: WheelApi
 ) {
-  const { accessToken, balance: initialBalance } = await loginApi.login(uuid, phone);
 
   const spinResults: number[] = [];
-  let currentEnergy = initialBalance.energy;
-  let lastBalance = initialBalance;
+  let lastBalance: Balance = initialBalance;
   let totalCoinsEarned = 0;
 
-  let safetyCounter = 0; // if the energy is infinite. we don't want to loop forever
-
-  while (currentEnergy > 0 && safetyCounter < 50) {
+  for (let i = 0; i < TOTAL_SCRIPTED_SPINS; i++) {
     const result = await wheelApi.spin(accessToken);
+
+    if (result.status === -3) 
+      break;
 
     const coinsFromThisSpin = getCoinAmount(result.rewards);
     totalCoinsEarned += coinsFromThisSpin;
 
     spinResults.push(result.selectedIndex);
-    currentEnergy = result.balance.energy;
     lastBalance = result.balance;
-
-    safetyCounter++;
   }
 
   console.log(`total coins earned from all spins: ${totalCoinsEarned}`);
   return { lastBalance, spinResults, totalCoinsEarned };
 }
 
-export function getCoinAmount(rewards: any[]): number {
+export function getCoinAmount(rewards: Reward[]): number {
   let totalCoins = 0;
 
   for (const reward of rewards) {
@@ -45,7 +44,7 @@ export function getCoinAmount(rewards: any[]): number {
     // collection rewards with nested coins (RewardDefinitionType: 6)
     if (reward.rewardDefinitionType === 6 && reward.feedResponse?.rewards) {
       for (const feedRewards of Object.values(reward.feedResponse.rewards)) {
-        for (const nestedReward of feedRewards as any[]) {
+        for (const nestedReward of feedRewards) {
           if (nestedReward.rewardResourceType === 1) {
             totalCoins += nestedReward.amount;
           }
